@@ -55,6 +55,7 @@ public static class Extensions
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
+                    .AddMeter("testemonitoring.custom")
                     .AddPrometheusExporter();
             })
             .WithTracing(tracing =>
