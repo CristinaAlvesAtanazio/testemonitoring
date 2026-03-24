@@ -55,3 +55,123 @@ dotnet test
 
 ## Help
 To learn more about the template go to the [project website](https://cleanarchitecture.jasontaylor.dev). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
+
+---
+
+# 📊 Observabilidade (Prometheus + Grafana)
+
+Este projeto possui monitoramento completo utilizando **OpenTelemetry + Prometheus + Grafana**.
+
+---
+
+## 🧠 Arquitetura
+
+```
+.NET API (OpenTelemetry)
+        ↓
+    Prometheus
+        ↓
+     Grafana
+```
+
+---
+
+## ▶️ Subindo a observabilidade
+
+A aplicação deve estar rodando antes:
+
+```bash
+dotnet run --project ./src/AppHost
+```
+
+Depois, suba os serviços:
+
+```bash
+cd infra
+docker compose -f docker-compose.observability.yml up -d
+```
+
+---
+
+## 🔎 Acessos
+
+| Serviço     | URL                   |
+|------------|-----------------------|
+| Prometheus | http://localhost:9090 |
+| Grafana    | http://localhost:3000 |
+
+---
+
+## 🔐 Login do Grafana
+
+Usuário: `admin`  
+Senha: definida via variável de ambiente
+
+---
+
+## ⚙️ Configurando o Grafana
+
+1. Acesse o Grafana
+2. Vá em **Connections > Data Sources**
+3. Clique em **Add data source**
+4. Selecione **Prometheus**
+5. Configure a URL:
+
+```
+http://localhost:9090
+```
+
+6. Clique em **Save & Test**
+
+---
+
+## 📊 Queries úteis
+
+### Status da aplicação
+```promql
+up
+```
+
+### Taxa de requisições
+```promql
+rate(http_server_request_duration_seconds_count[1m])
+```
+
+### Tempo de resposta
+```promql
+http_server_request_duration_seconds_sum
+```
+
+### GC do .NET
+```promql
+dotnet_gc_collections_total
+```
+
+### Uso de memória
+```promql
+dotnet_process_memory_working_set_bytes
+```
+
+---
+
+## 🔐 Configuração de credenciais
+
+As credenciais do Grafana são definidas via variável de ambiente.
+
+Crie um arquivo `.env` na pasta `infra`:
+
+```env
+GRAFANA_PASSWORD=your_password_here
+```
+
+⚠️ Este arquivo não deve ser versionado.
+
+---
+
+## 🚀 Observações
+
+- O Prometheus coleta métricas automaticamente via `/metrics`
+- O Grafana consome os dados do Prometheus
+- A aplicação já está instrumentada com OpenTelemetry
+
+---

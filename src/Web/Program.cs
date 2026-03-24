@@ -1,5 +1,6 @@
 using testemonitoring.Infrastructure.Data;
 using Scalar.AspNetCore;
+using OpenTelemetry.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,5 +43,5 @@ app.MapDefaultEndpoints();
 app.MapEndpoints(typeof(Program).Assembly);
 
 app.UseFileServer();
-
+app.MapPrometheusScrapingEndpoint();
 app.Run();
